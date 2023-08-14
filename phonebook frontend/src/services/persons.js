@@ -1,5 +1,5 @@
 import axios from 'axios';
-const baseUrl = '/api/persons';
+const baseUrl = 'https://backnd-kh3l.onrender.com/api/persons';
 
 const getAllPersons = () => {
   const request = axios.get(baseUrl);

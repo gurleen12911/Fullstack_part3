@@ -12,7 +12,7 @@ const App = () => {
 
   useEffect(() => {
     axios
-      .get('/api/persons')
+      .get('https://backnd-kh3l.onrender.com/api/persons')
       .then((response) => {
         setPersons(response.data);
       })
@@ -47,7 +47,7 @@ const App = () => {
         const updatedPerson = { ...existingPerson, number: newNumber };
 
         axios
-          .put(`'/api/persons'/${existingPerson.id}`, updatedPerson)
+          .put(`'https://backnd-kh3l.onrender.com/api/persons'/${existingPerson.id}`, updatedPerson)
           .then((response) => {
             setPersons(
               persons.map((person) =>
@@ -80,7 +80,7 @@ const App = () => {
       };
 
       axios
-        .post('/api/persons', personObject)
+        .post('https://backnd-kh3l.onrender.com/api/persons', personObject)
         .then((response) => {
           setPersons(persons.concat(response.data));
           setNewName('');
@@ -105,7 +105,7 @@ const App = () => {
 
     if (personToDelete && window.confirm(`Delete ${personToDelete.name}?`)) {
       axios
-        .delete(`/api/persons/${id}`)
+        .delete(`https://backnd-kh3l.onrender.com/api/persons/${id}`)
         .then(() => {
           setPersons(persons.filter((person) => person.id !== id));
           setSuccessMessage(`Person '${personToDelete.name}' deleted successfully.`);
