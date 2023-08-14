@@ -1,2 +1,2 @@
 # Fullstack_part3
-Deployed Backend URL on Render: https://backend-68gv.onrender.com
+Deployed Backend URL on Render: https://gurleen-frontend.onrender.com
