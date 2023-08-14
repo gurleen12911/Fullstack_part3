@@ -7,7 +7,9 @@ const PORT = process.env.PORT || 3001
 
 app.use(express.static('build'));
 
-app.use(cors());
+app.use(cors({
+    origin: 'https://gurleen-frontend.onrender.com' 
+  }));
 app.use(express.json());
 
 let phonebookEntries = [
