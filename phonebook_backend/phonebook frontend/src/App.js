@@ -14,6 +14,7 @@ const App = () => {
     axios
       .get('/api/persons')
       .then((response) => {
+        console.log(response.data);
         setPersons(response.data);
       })
       .catch((error) => {
