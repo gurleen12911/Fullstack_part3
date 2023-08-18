@@ -1,2 +1,3 @@
 # Fullstack_part3
-Deployed Backend URL on Render: https://gurleen-frontend.onrender.com
+Exercise 3.12: Command-line database
+Phonebook Application with MongoDB Atlas
