@@ -1,44 +1,43 @@
 const express = require('express');
-const app = express();
+const morgan = require('morgan');
 const cors = require('cors');
-require('dotenv').config();
+const mongoose = require('mongoose');
+const Person = require('./models/person'); // Import the Person model from your models directory
+require('dotenv').config(); // Load environment variables from .env file
+const url = process.env.MONGODB_URI;
 
-const Person = require('./models/person');
-
-const requestLogger = (request, response, next) => {
-  console.log('Method:', request.method);
-  console.log('Path:  ', request.path);
-  console.log('Body:  ', request.body);
-  console.log('---');
-  next();
-};
-
-const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' });
-};
-
-const PORT = process.env.PORT 
+const app = express();
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
+// Connect to the MongoDB database
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log('Connected to MongoDB');
+  })
+  .catch((error) => {
+    console.error('Error connecting to MongoDB:', error.message);
+  });
+
+
+app.use(express.static('build'));
 app.use(cors());
 app.use(express.json());
-app.use(requestLogger);
-app.use(express.static('build'));
 
-app.get('/api/persons', (request, response) => {
-  Person.find({}).then(persons => {
-    response.json(persons);
-  });
+// Route handler for fetching all phonebook entries
+app.get('/api/persons', (req, res, next) => {
+  Person.find({})
+    .then(entries => {
+      res.json(entries);
+    })
+    .catch(error => next(error));
 });
 
-app.post('/api/persons', (request, response) => {
-  const body = request.body;
-
-  if (!body.name || !body.number) {
-    return response.status(400).json({ error: 'Name or number missing' });
-  }
+// Route handler for adding a new phonebook entry
+app.post('/api/persons', (req, res, next) => {
+  const body = req.body;
 
   const newPerson = new Person({
     name: body.name,
@@ -47,40 +46,46 @@ app.post('/api/persons', (request, response) => {
 
   newPerson.save()
     .then(savedPerson => {
-      response.json(savedPerson);
+      res.json(savedPerson);
     })
-    .catch(error => {
-      console.error(error);
-      response.status(500).json({ error: 'An internal error occurred' });
-    });
+    .catch(error => next(error));
 });
 
-app.get('/api/persons/:id', (request, response) => {
-  Person.findById(request.params.id)
-    .then(person => {
-      if (person) {
-        response.json(person);
+// Route handler for fetching a single entry by ID
+app.get('/api/persons/:id', (req, res, next) => {
+  const id = req.params.id;
+
+  Person.findById(id)
+    .then(entry => {
+      if (entry) {
+        res.json(entry);
       } else {
-        response.status(404).end();
+        res.status(404).json({ error: 'Entry not found' });
       }
     })
-    .catch(error => {
-      console.error(error);
-      response.status(500).json({ error: 'An internal error occurred' });
-    });
+    .catch(error => next(error));
 });
 
-app.delete('/api/persons/:id', (request, response) => {
-  const id = request.params.id;
+// Route handler for deleting an entry by ID
+app.delete('/api/persons/:id', (req, res, next) => {
+  const id = req.params.id;
 
   Person.findByIdAndRemove(id)
     .then(() => {
-      response.status(204).end();
+      res.status(204).end();
     })
-    .catch(error => {
-      console.error(error);
-      response.status(500).json({ error: 'An internal error occurred' });
-    });
+    .catch(error => next(error));
 });
 
-app.use(unknownEndpoint);
+// Error handling middleware
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'Malformatted id' });
+  }
+
+  next(error);
+};
+
+app.use(errorHandler);
