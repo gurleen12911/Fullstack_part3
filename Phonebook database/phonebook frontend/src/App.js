@@ -46,9 +46,10 @@ const App = () => {
         )
       ) {
         const updatedPerson = { ...existingPerson, number: newNumber };
-
+        
+        console.log(`Updating person with URL: /api/persons/${existingPerson.id}`);
         axios
-          .put(`'/api/persons'/${existingPerson.id}`, updatedPerson)
+          .put(`/api/persons/${existingPerson.id}`, updatedPerson)
           .then((response) => {
             setPersons(
               persons.map((person) =>
@@ -93,7 +94,11 @@ const App = () => {
         })
         .catch((error) => {
           console.log('Error adding person:', error);
-          setErrorMessage('Failed to add the person.');
+          if (error.response && error.response.data.error) {
+            setErrorMessage(error.response.data.error);
+          } else {
+            setErrorMessage('Failed to add the person.');
+          }
           setTimeout(() => {
             setErrorMessage(null);
           }, 5000);
@@ -124,15 +129,12 @@ const App = () => {
     }
   };
 
-
-
   const filteredPersons = persons.filter((person) => {
     if (person && person.name) {
       return person.name.toLowerCase().includes(searchTerm.toLowerCase());
     }
     return false;
   });
-  
 
   return (
     <div>
