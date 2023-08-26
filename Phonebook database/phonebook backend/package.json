@@ -8,7 +8,8 @@
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "rm -rf build && cd ../phonebook frontend && npm run build && cp -r build ../phonebook backend",
-    "deploy:full": "npm run build:ui && cd ../phonebook backend/ && git add . && git commit -m uibuild && git push"
+    "deploy:full": "npm run build:ui && cd ../phonebook backend/ && git add . && git commit -m uibuild && git push",
+    "lint": "eslint ."
   },
   "author": "Gurleen Kour",
   "license": "ISC",
@@ -20,6 +21,9 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "eslint": "^8.48.0",
+    "eslint-plugin-react": "^7.33.2",
+    "nodemon": "^3.0.1",
+    "react": "^18.2.0"
   }
 }

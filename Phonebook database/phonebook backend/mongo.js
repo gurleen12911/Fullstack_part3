@@ -6,7 +6,7 @@ if (process.argv.length < 3) {
 }
 
 const password = process.argv[2];
-const dbName = 'phbook'; 
+const dbName = 'phbook';
 const url = `mongodb+srv://phbook:${password}@cluster0.e0if99k.mongodb.net/${dbName}?retryWrites=true&w=majority`;
 
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
