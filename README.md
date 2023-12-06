@@ -1,2 +1,4 @@
-Full Stack Open 
-Part 3 (a,b,c,d) using Create React App
+Used Node.js and Express
+Deployed app to internet
+Saved data to MongoDB
+Used Validation and ESLint
